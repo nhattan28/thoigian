@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>⏰ Đồng hồ hẹn giờ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    nav {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      margin-left: 16px;
+      font-weight: bold;
+      color: #6C5CE7;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #2d3436;
+      margin-bottom: 20px;
+    }
+
+    input {
+      font-size: 18px;
+      padding: 8px 12px;
+      width: 80px;
+      margin: 5px;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    #countdown {
+      font-size: 64px;
+      font-weight: bold;
+      margin-top: 30px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background-color: #e17055;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+      min-width: 120px;
+    }
+
+    button:hover {
+      background-color: #d35400;
+    }
+
+    @media (max-width: 768px) {
+      #countdown {
+        font-size: 48px;
+      }
+
+      nav a {
+        font-size: 12px;
+        margin-left: 10px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 10px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">📅 Hôm nay</a>
+    <a href="lich-thang.html">🗓️ Tháng</a>
+    <a href="bam-gio.html">⏱ Bấm giờ</a>
+  </nav>
+
+  <h1>⏰ Đồng hồ hẹn giờ</h1>
+  <div>
+    <input id="hour" type="number" min="0" placeholder="Giờ">
+    <input id="min" type="number" min="0" placeholder="Phút">
+    <input id="sec" type="number" min="0" placeholder="Giây">
+  </div>
+
+  <div class="buttons">
+    <button onclick="startCountdown()">▶️ Bắt đầu</button>
+    <button onclick="pauseCountdown()">⏸️ Tạm dừng</button>
+    <button onclick="resetCountdown()">🔁 Đặt lại</button>
+  </div>
+
+  <div id="countdown">00:00:00</div>
+
+  <!-- Âm thanh báo hết giờ -->
+  <audio id="alarmSound" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto"></audio>
+
+  <script>
+    let countdownInterval;
+    let total = 0;
+    let paused = false;
+
+    function formatTime(seconds) {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function updateDisplay() {
+      document.getElementById("countdown").textContent = formatTime(total);
+    }
+
+    function startCountdown() {
+      if (paused) {
+        paused = false;
+      } else {
+        clearInterval(countdownInterval);
+        const hours = parseInt(document.getElementById("hour").value) || 0;
+        const minutes = parseInt(document.getElementById("min").value) || 0;
+        const seconds = parseInt(document.getElementById("sec").value) || 0;
+        total = hours * 3600 + minutes * 60 + seconds;
+      }
+
+      if (total <= 0) return;
+
+      updateDisplay();
+      countdownInterval = setInterval(() => {
+        if (!paused) {
+          total--;
+          updateDisplay();
+          if (total <= 0) {
+            clearInterval(countdownInterval);
+            document.getElementById("alarmSound").play();
+            alert("⏰ Hết giờ!");
+          }
+        }
+      }, 1000);
+    }
+
+    function pauseCountdown() {
+      paused = true;
+    }
+
+    function resetCountdown() {
+      clearInterval(countdownInterval);
+      total = 0;
+      updateDisplay();
+    }
+
+    updateDisplay();
+  </script>
+
+</body>
+</html>
