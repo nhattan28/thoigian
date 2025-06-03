@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>⏱ Đồng hồ bấm giờ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #74ebd5, #acb6e5);
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    nav {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      margin-left: 16px;
+      font-weight: bold;
+      color: #6C5CE7;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    #display {
+      font-size: 120px;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+
+    .controls button {
+      font-size: 16px;
+      padding: 10px 20px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 6px;
+      background-color: #6C5CE7;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .controls button:hover {
+      background-color: #4b4be0;
+    }
+
+    @media (max-width: 768px) {
+      #display {
+        font-size: 64px;
+      }
+      .controls button {
+        font-size: 14px;
+        margin-top: 10px;
+      }
+      nav a {
+        font-size: 12px;
+        margin-left: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav menu ở góc phải trên -->
+  <nav>
+    <a href="index.html">📅 Hôm nay</a>
+    <a href="lich-thang.html">🗓️ Tháng</a>
+    <a href="hen-gio.html">⏰Hẹn giờ </a>
+  </nav>
+
+  <h1>⏱ Đồng hồ bấm giờ</h1>
+  <div id="display">00:00:00</div>
+  <div class="controls">
+    <button onclick="start()">▶️ Bắt đầu</button>
+    <button onclick="stop()">⏸ Dừng</button>
+    <button onclick="reset()">🔁 Đặt lại</button>
+  </div>
+
+  <script>
+    let startTime, interval;
+    let elapsed = 0;
+
+    function updateDisplay() {
+      const time = Date.now() - startTime + elapsed;
+      const sec = Math.floor(time / 1000) % 60;
+      const min = Math.floor(time / (1000 * 60)) % 60;
+      const hr = Math.floor(time / (1000 * 60 * 60));
+      document.getElementById('display').textContent =
+        `${String(hr).padStart(2, '0')}:${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+    }
+
+    function start() {
+      if (!interval) {
+        startTime = Date.now();
+        interval = setInterval(updateDisplay, 1000);
+      }
+    }
+
+    function stop() {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+        elapsed += Date.now() - startTime;
+      }
+    }
+
+    function reset() {
+      clearInterval(interval);
+      interval = null;
+      elapsed = 0;
+      document.getElementById('display').textContent = "00:00:00";
+    }
+  </script>
+</body>
+</html>
